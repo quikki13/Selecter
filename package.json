@@ -2,10 +2,12 @@
   "name": "selecter",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack --mode development",
+    "prod": "webpack --mode production",
+    "dev": "webpack-dev-server --mode development --open"
   },
   "repository": {
     "type": "git",
@@ -18,8 +20,10 @@
   },
   "homepage": "https://github.com/quikki13/Selecter#readme",
   "devDependencies": {
+    "path": "^0.12.7",
     "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.8.0"
   },
   "dependencies": {
     "jquery": "^3.4.1"
