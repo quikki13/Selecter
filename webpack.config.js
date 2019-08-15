@@ -2,7 +2,7 @@ let path = require('path');
 let ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 let conf = {
-    entry: './src/index.js',
+    entry: './src/index.jsx',
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: 'main.js',
@@ -16,7 +16,11 @@ let conf = {
               fallback: "style-loader",
               use: ["css-loader", "sass-loader"]
             })
-          }
+          },
+          {
+            test:/\.(js|jsx)?$/,
+            use: ['babel-loader']
+         }
         ]
       },
       plugins: [
