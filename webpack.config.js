@@ -20,7 +20,7 @@ let conf = {
           {
             test:/\.(js|jsx)?$/,
             use: ['babel-loader']
-         }
+          }
         ]
       },
       plugins: [

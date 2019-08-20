@@ -1,48 +1,70 @@
-function formatDate(date) {
-    return date.toLocaleDateString();
-  }
+class LoginControl extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleLoginClick = this.handleLoginClick.bind(this);
+        this.handleLogoutClick = this.handleLogoutClick.bind(this);
+        this.state = {isLoggedIn: false};
+    }
 
-  function Avatar(props) {
-    return (
-      <img
-        className="Avatar"
-        src={props.user.avatarUrl}
-        alt={props.user.name}
-      />
-    );
-  }
-  
-  function UserInfo(props) {
-    return (
-      <div className="UserInfo">
-        <Avatar user={props.user} />
-        <div className="UserInfo-name">{props.user.name}</div>
-      </div>
-    );
-  }
-  
-  function Comment(props) {
-    return (
-      <div className="Comment">
-        <UserInfo user={props.author} />
-        <div className="Comment-text">{props.text}</div>
-        <div className="Comment-date">
-          {formatDate(props.date)}
-        </div>
-      </div>
-    );
-  }
+    handleLoginClick() {
+        this.setState({isLoggedIn: true});
+    }
 
-const comment = {
-    date: new Date(),
-    text: 'I hope you enjoy learning React!',
-    author: {
-        name: 'Hello Kitty',
-        avatarUrl: 'https://placekitten.com/g/64/64',
-    },
-};
+    handleLogoutClick() {
+        this.setState({isLoggedIn: false});
+    }
+
+    render() {
+        const isLoggedIn = this.state.isLoggedIn;
+        let button;
+
+        if (isLoggedIn) {
+            button = <LogoutButton onClick={this.handleLogoutClick}/>
+        } else {
+            button = <LoginButton onClick={this.handleLoginClick}/>
+        }
+
+        return (
+            <div>
+                <Greeting isLoggedIn={isLoggedIn} /> {button}
+            </div>
+        )
+    }
+}
+
+function UserGreeting(props) {
+    return <h1>Welcome back!</h1>;
+}
+
+function GuestGreeting(props) {
+    return <h1>Please sign up.</h1>;
+}
+
+function Greeting(props) {
+    const isLoggedIn = props.isLoggedIn;
+    if (isLoggedIn) {
+        return <UserGreeting />;
+    }
+    return <GuestGreeting />;
+}
+
+function LoginButton(props) {
+    return (
+        <button onClick={props.onClick}>
+            Войти
+        </button>
+    )
+}
+
+function LogoutButton(props) {
+    return (
+        <button onClick={props.onClick}>
+            Выйти
+        </button>
+    )
+}
 
 ReactDOM.render(
-    <Comment date={comment.date} text={comment.text} author={comment.author}/>,
-    document.getElementById('component')
+    <LoginControl />,
+    document.getElementById('root')
 );
