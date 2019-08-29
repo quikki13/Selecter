@@ -1,70 +1,89 @@
-class LoginControl extends React.Component {
+let scaleInfo = {
+    "c": "Цельсии",
+    "f": "Фаренгейт"
+}
+
+function toCelsius(fahrenheit) {
+    return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFarenheit(celsius) {
+    return (celsius * 9 / 5) + 32;
+}
+
+function tryConvert(temperature, convert) {
+    const input = parseFloat(temperature);
+    if (Number.isNaN(input)) {
+        return "";
+    }
+    const output = convert(input);
+    const rounded = Math.round(output * 1000) / 1000;
+    return rounded.toString();
+}
+
+function BoilingVerdict(props) {
+    if(props.celsius >= 100) {
+        return <p>Вода кипит!</p>
+    }
+    return <p>Вода не кипит!</p>
+}
+
+class TemperatureInput extends React.Component {
     constructor(props) {
         super(props);
-        this.handleLoginClick = this.handleLoginClick.bind(this);
-        this.handleLogoutClick = this.handleLogoutClick.bind(this);
-        this.state = {isLoggedIn: false};
+
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    handleLoginClick() {
-        this.setState({isLoggedIn: true});
-    }
-
-    handleLogoutClick() {
-        this.setState({isLoggedIn: false});
+    handleClick(event) {
+        this.props.onTemperatureChange(event.target.value);
     }
 
     render() {
-        const isLoggedIn = this.state.isLoggedIn;
-        let button;
-
-        if (isLoggedIn) {
-            button = <LogoutButton onClick={this.handleLogoutClick}/>
-        } else {
-            button = <LoginButton onClick={this.handleLoginClick}/>
-        }
-
+        const temperature = this.props.temperature;
+        const scale = this.props.scale;
         return (
             <div>
-                <Greeting isLoggedIn={isLoggedIn} /> {button}
+                <legend>Введите температуру в {scaleInfo[scale]}:</legend>
+                <input value={temperature} onChange={this.handleClick}/>
             </div>
         )
     }
 }
 
-function UserGreeting(props) {
-    return <h1>Welcome back!</h1>;
-}
-
-function GuestGreeting(props) {
-    return <h1>Please sign up.</h1>;
-}
-
-function Greeting(props) {
-    const isLoggedIn = props.isLoggedIn;
-    if (isLoggedIn) {
-        return <UserGreeting />;
+class Calculator extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFarenheitChange = this.handleFarenheitChange.bind(this);
+        this.state = {temperature: '', scale: 'c'};
     }
-    return <GuestGreeting />;
-}
 
-function LoginButton(props) {
-    return (
-        <button onClick={props.onClick}>
-            Войти
-        </button>
-    )
-}
+    handleCelsiusChange(temperature) {
+        this.setState({scale: 'c', temperature});
+    }
 
-function LogoutButton(props) {
-    return (
-        <button onClick={props.onClick}>
-            Выйти
-        </button>
-    )
+    handleFarenheitChange(temperature) {
+        this.setState({scale: 'f', temperature});
+    }
+
+    render() {
+        const scale = this.state.scale;
+        const temperature = this.state.temperature;
+        const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+        const farenheit = scale === 'c' ? tryConvert(temperature, toFarenheit) : temperature;
+
+        return (
+            <div>
+            <TemperatureInput onTemperatureChange={this.handleCelsiusChange} temperature={celsius} scale="c"/>
+            <TemperatureInput onTemperatureChange={this.handleFarenheitChange} temperature={farenheit} scale="f"/> 
+            <BoilingVerdict celsius={parseFloat(celsius)}/>
+            </div>
+        )
+    }
 }
 
 ReactDOM.render(
-    <LoginControl />,
+    <Calculator />,
     document.getElementById('root')
 );
