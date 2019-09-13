@@ -1,89 +1,60 @@
-let scaleInfo = {
-    "c": "Цельсии",
-    "f": "Фаренгейт"
-}
-
-function toCelsius(fahrenheit) {
-    return (fahrenheit - 32) * 5 / 9;
-}
-
-function toFarenheit(celsius) {
-    return (celsius * 9 / 5) + 32;
-}
-
-function tryConvert(temperature, convert) {
-    const input = parseFloat(temperature);
-    if (Number.isNaN(input)) {
-        return "";
-    }
-    const output = convert(input);
-    const rounded = Math.round(output * 1000) / 1000;
-    return rounded.toString();
-}
-
-function BoilingVerdict(props) {
-    if(props.celsius >= 100) {
-        return <p>Вода кипит!</p>
-    }
-    return <p>Вода не кипит!</p>
-}
-
-class TemperatureInput extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    handleClick(event) {
-        this.props.onTemperatureChange(event.target.value);
+class Board extends React.Component {
+    renderSquare(i) {
+        return <Square />;
     }
 
     render() {
-        const temperature = this.props.temperature;
-        const scale = this.props.scale;
+        const status = 'Next player: X';
         return (
             <div>
-                <legend>Введите температуру в {scaleInfo[scale]}:</legend>
-                <input value={temperature} onChange={this.handleClick}/>
+                <div className="status">{status}</div>
+                <div className="board-row">
+                    {this.renderSquare(1)}
+                    {this.renderSquare(2)}
+                    {this.renderSquare(3)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(4)}
+                    {this.renderSquare(5)}
+                    {this.renderSquare(6)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(7)}
+                    {this.renderSquare(8)}
+                    {this.renderSquare(9)}
+                </div>
             </div>
         )
     }
 }
 
-class Calculator extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
-        this.handleFarenheitChange = this.handleFarenheitChange.bind(this);
-        this.state = {temperature: '', scale: 'c'};
-    }
-
-    handleCelsiusChange(temperature) {
-        this.setState({scale: 'c', temperature});
-    }
-
-    handleFarenheitChange(temperature) {
-        this.setState({scale: 'f', temperature});
-    }
-
+class Square extends React.Component {
     render() {
-        const scale = this.state.scale;
-        const temperature = this.state.temperature;
-        const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
-        const farenheit = scale === 'c' ? tryConvert(temperature, toFarenheit) : temperature;
-
         return (
-            <div>
-            <TemperatureInput onTemperatureChange={this.handleCelsiusChange} temperature={celsius} scale="c"/>
-            <TemperatureInput onTemperatureChange={this.handleFarenheitChange} temperature={farenheit} scale="f"/> 
-            <BoilingVerdict celsius={parseFloat(celsius)}/>
+            <button className="square">
+                {this.props.value}
+            </button>
+        );
+    }
+}
+
+class Game extends React.Component {
+    render() {
+        return (
+            <div className="game">
+                <div className="game-board">
+                    <Board />
+                </div>
+                <div className="game-info">
+
+                </div>
             </div>
         )
     }
 }
+
 
 ReactDOM.render(
-    <Calculator />,
+    <Game />,
     document.getElementById('root')
 );
